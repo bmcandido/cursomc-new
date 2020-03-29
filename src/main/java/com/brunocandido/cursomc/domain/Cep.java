@@ -1,11 +1,12 @@
 package com.brunocandido.cursomc.domain;
 
-
+import java.io.Serializable;
 
 import com.github.gilbertotorrezan.viacep.se.ViaCEPClient;
 import com.github.gilbertotorrezan.viacep.shared.ViaCEPEndereco;
 
-public class Cep {
+public class Cep implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String bairro;
@@ -22,8 +23,8 @@ public class Cep {
 		ViaCEPEndereco codigoCep = cliente.getEndereco(cepe);
 		this.bairro = codigoCep.getBairro();
 		this.logadouro = codigoCep.getLogradouro();
-		this.cep=cepe;
-	
+		this.cep = cepe;
+
 	}
 
 	public void setId(Integer id) {
@@ -45,8 +46,5 @@ public class Cep {
 	public void setComplemento(String complemento) {
 		this.complemento = complemento;
 	}
-	
-	
-
 
 }
