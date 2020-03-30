@@ -6,12 +6,15 @@ import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class ItemPedido implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore //Jason vai ignorar esta marcação
 	@EmbeddedId //Significa que minha chave é dupla e esta relacionada em no ID da outra classe
 	private ItemPedidoPrimaryKey id = new ItemPedidoPrimaryKey();
 	private double desconto;
@@ -33,13 +36,14 @@ public class ItemPedido implements Serializable {
 		this.preco = preco;
 	
 	}
-
+    
+	@JsonIgnore
 	public Pedido getPedido() {
 		return id.getPedido();
 
 	}
 
-	
+
 	public Produto getProduto() {
 		return id.getProduto();
 

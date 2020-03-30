@@ -15,9 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import com.brunocandido.cursomc.domain.Cliente;
-import com.brunocandido.cursomc.domain.Enderecos;
-import com.brunocandido.cursomc.domain.Pagamento;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Pedido implements Serializable {
@@ -27,12 +26,19 @@ public class Pedido implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date instante;
-
+    
+	
+	@JsonManagedReference //Dentro da Classe Pagamento eu faço um @JsonBackReference contrapartida a essa anotação
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido") // Quando o Id está em outra classe é usada esta anotação
 																// com estes parametros
 																// Chamado de mapeamento bidirecional 1 para 1
 	private Pagamento pagamento;
+
+	@JsonManagedReference // Dentro da Classe Cliente é feito o @JsonBackReference seria a contrapartida
+							// do @JsonManagedReference
+							// Esta anotação serve para que o serviço não dê um loop infinito
 
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")

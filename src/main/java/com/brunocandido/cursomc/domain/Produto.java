@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -29,33 +30,27 @@ public class Produto implements Serializable {
 	private String descricao;
 	private Double preco;
 	private String complemento;
-    
+
 	@JsonBackReference
 	@ManyToMany
-	@JoinTable(name = "PRODUTO_CATEGORIA", 
-	          joinColumns = @JoinColumn(name = "produto_id"), 
-	          inverseJoinColumns = @JoinColumn(name = "categoria_id")) // Estes
-																																			// ID
+	@JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id")) // Estes
+																																					// ID
 	// Tabela Temporaria de Ligação
 	private List<Categoria> categorias = new ArrayList<>();
-	
+
 	@JsonBackReference
 	@ManyToMany
-	@JoinTable(name = "PRODUTO_CLASSIFICACAO", 
-	joinColumns = @JoinColumn(name = "produto_id"), 
-	inverseJoinColumns = @JoinColumn(name = "classificacaoproduto_id")) // Estes
+	@JoinTable(name = "PRODUTO_CLASSIFICACAO", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "classificacaoproduto_id")) // Estes
 																																									// Comandos
 	private List<ClassificacaoProduto> classificacaoProduto = new ArrayList<>();
-	
+
 	@JsonBackReference
 	@ManyToMany
-	@JoinTable(name = "PRODUTO_TIPO", 
-	          joinColumns = @JoinColumn(name = "produto_id"), 
-	          inverseJoinColumns = @JoinColumn(name = "tipoproduto_id")) // Estes
-																																				// ID
+	@JoinTable(name = "PRODUTO_TIPO", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "tipoproduto_id")) // Estes
+																																					// ID
 	private List<TipoProduto> tipoProduto = new ArrayList<>();
-	
-	
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "id.produto") // Observa na Classe ItemPedidoPrimaryKey que a associação é a junção do id da
 	// Classe mais a classe produto
 	private Set<ItemPedido> itens = new HashSet<>();
@@ -73,14 +68,16 @@ public class Produto implements Serializable {
 		// Categoria não foi inicializada porque já foi inicializada dentro da
 		// declaração
 	}
-	
-	public List<Pedido> getPedidos(){
+
+	@JsonIgnore // Tem que ignorar o Get também para não serializar entao o @JsonIgnore é feito
+				// aqui dentro da declaracao private Set<ItemPedido> itens = new HashSet<>();
+	public List<Pedido> getPedidos() {
 		List<Pedido> lista = new ArrayList<>();
 		for (ItemPedido x : this.itens) {
-			lista.add(x.getPedido());			
+			lista.add(x.getPedido());
 		}
 		return lista;
-	} //Criado este metodo para retornar dentro de produto a lista de pedidos
+	} // Criado este metodo para retornar dentro de produto a lista de pedidos
 
 	public Integer getId() {
 		return id;
@@ -137,7 +134,7 @@ public class Produto implements Serializable {
 	public void setTipoProduto(List<TipoProduto> tipoProduto) {
 		this.tipoProduto = tipoProduto;
 	}
-	
+
 	public Set<ItemPedido> getItens() {
 		return itens;
 	}
@@ -145,7 +142,6 @@ public class Produto implements Serializable {
 	public void setItens(Set<ItemPedido> itens) {
 		this.itens = itens;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -171,6 +167,5 @@ public class Produto implements Serializable {
 			return false;
 		return true;
 	}
-
 
 }
