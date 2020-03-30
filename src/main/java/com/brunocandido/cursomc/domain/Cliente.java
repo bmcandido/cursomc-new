@@ -42,6 +42,7 @@ public class Cliente implements Serializable {
 	private Set<String> telefone = new HashSet<>(); // Set salva uma lista não podendo repetir, ou seja nao poderei
 													// repetir o telefone
 	
+	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 
 

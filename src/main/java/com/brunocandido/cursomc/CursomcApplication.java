@@ -1,5 +1,6 @@
 package com.brunocandido.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,13 @@ import com.brunocandido.cursomc.domain.ClassificacaoProduto;
 import com.brunocandido.cursomc.domain.Cliente;
 import com.brunocandido.cursomc.domain.Enderecos;
 import com.brunocandido.cursomc.domain.Estado;
+import com.brunocandido.cursomc.domain.Pagamento;
+import com.brunocandido.cursomc.domain.PagamentoBoleto;
+import com.brunocandido.cursomc.domain.PagamentoComCartao;
+import com.brunocandido.cursomc.domain.Pedido;
 import com.brunocandido.cursomc.domain.Produto;
 import com.brunocandido.cursomc.domain.TipoProduto;
+import com.brunocandido.cursomc.enuns.EstadoPagamento;
 import com.brunocandido.cursomc.enuns.TipoCliente;
 import com.brunocandido.cursomc.repositories.CategoriaRepository;
 import com.brunocandido.cursomc.repositories.CidadeRepository;
@@ -22,9 +28,10 @@ import com.brunocandido.cursomc.repositories.ClassificacaoProdutoRepository;
 import com.brunocandido.cursomc.repositories.ClienteRepository;
 import com.brunocandido.cursomc.repositories.EnderecosRepository;
 import com.brunocandido.cursomc.repositories.EstadoRepository;
+import com.brunocandido.cursomc.repositories.PagamentoRepository;
+import com.brunocandido.cursomc.repositories.PedidoRepository;
 import com.brunocandido.cursomc.repositories.ProdutoRepository;
 import com.brunocandido.cursomc.repositories.TipoProdutoRepository;
-
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner { // Acrescentei o implemento CommandLineRunner serve para
@@ -53,6 +60,13 @@ public class CursomcApplication implements CommandLineRunner { // Acrescentei o 
 
 	@Autowired
 	EnderecosRepository enderecosRepository;
+	
+	@Autowired
+	PedidoRepository pedidoRepository;
+	
+	@Autowired
+	PagamentoRepository pagamentoRepository;
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -188,20 +202,52 @@ public class CursomcApplication implements CommandLineRunner { // Acrescentei o 
 		// Dominio do Cliente e Enderecos
 
 		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
-		
+		Cliente cli2 = new Cliente(null, "Junior Carvalho Mendonca", "bmcandido@gmail.com", "00978867723",
+				TipoCliente.PESSOAFISICA);
+
 		cli1.getTelefone().addAll(Arrays.asList("27363323", "93838393"));
-		
+		cli2.getTelefone().addAll(Arrays.asList("62987776654"));
+
 		Enderecos end1 = new Enderecos(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, cc1);
 		Enderecos end2 = new Enderecos(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, cc2);
+		Enderecos end3 = new Enderecos(null, "Rua C-75", "S/N", "Apto 2020", "Centro", "76100000", cli2, cc0);
 		cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+		cli2.getEnderecos().addAll(Arrays.asList(end3));
 
 		// ****************************************************************************************************************
 		// Repository tipo de Produtos
 
 		cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+		cli2.getEnderecos().addAll(Arrays.asList(end3));
+
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecosRepository.saveAll(Arrays.asList(end1, end2, end3));
+
+		// ****************************************************************************************************************
+		// Dominio Pedido / Pagamento
+
+		Pedido ped1 = new Pedido(null, new SimpleDateFormat("DD/mm/yyyy").parse("30/03/2020"), cli1, end1);
+		Pedido ped2 = new Pedido(null, new SimpleDateFormat("DD/mm/yyyy").parse("29/03/2020"), cli2, end3);
+
+		Pagamento pg1 = new PagamentoComCartao(null, EstadoPagamento.PAGO, ped1, 6);
+		ped1.setPagamento(pg1);
+
+		Pagamento pg2 = new PagamentoBoleto(null, EstadoPagamento.PENDENTE, ped2,
+				null,
+				new SimpleDateFormat("DD/mm/yyyy").parse("30/04/2020"));
 		
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecosRepository.saveAll(Arrays.asList(end1, end2));
+		ped2.setPagamento(pg2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1));
+		cli2.getPedidos().addAll(Arrays.asList(ped2));
+		
+
+		// ****************************************************************************************************************
+		// Repository
+
+		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pg1,pg2));
+		
 
 	}
 

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
@@ -11,7 +13,9 @@ import javax.persistence.OneToOne;
 import com.brunocandido.cursomc.enuns.EstadoPagamento;
 
 @Entity
-public class Pagamento implements Serializable {
+@Inheritance(strategy=InheritanceType.JOINED) // Usado para instanciar Tabela  e Subclasses
+// no nosso caso PAgamentoBoleto e PagaemntoComCartao
+public abstract class Pagamento implements Serializable { //Abstract para garantir que eu tenho que instanciar uma classe de Extenção
 
 
 	private static final long serialVersionUID = 1L;
@@ -19,7 +23,7 @@ public class Pagamento implements Serializable {
 	@Id
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)  não possui pois o Id é do pedido e não do Pagamento
 	private Integer id;
-	private EstadoPagamento estado;
+	private Integer estado;
 	
 	@OneToOne
 	@JoinColumn(name="pedido_id")
@@ -33,7 +37,7 @@ public class Pagamento implements Serializable {
 	public Pagamento(Integer id, EstadoPagamento estado, Pedido pedido) {
 		super();
 		this.id = id;
-		this.estado = estado;
+		this.estado = estado.getCod();
 		this.pedido = pedido;
 	}
 
@@ -46,11 +50,11 @@ public class Pagamento implements Serializable {
 	}
 
 	public EstadoPagamento getEstado() {
-		return estado;
+		return EstadoPagamento.toEnum(estado); //Para Pegar o numero inteiro dentro da Classe ENUM EstadoPagamento
 	}
 
 	public void setEstado(EstadoPagamento estado) {
-		this.estado = estado;
+		this.estado = estado.getCod();
 	}
 
 	public Pedido getPedido() {
