@@ -11,7 +11,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.brunocandido.cursomc.enuns.EstadoPagamento;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED) // Usado para instanciar Tabela  e Subclasses
@@ -26,8 +26,8 @@ public abstract class Pagamento implements Serializable { //Abstract para garant
 	private Integer id;
 	private Integer estado;
 	
-	
-	@JsonBackReference // Em contrapartida na Classe pagamento tenho a anotação @JsonManagedReference
+	@JsonIgnore
+	//@JsonBackReference // Em contrapartida na Classe pagamento tenho a anotação @JsonManagedReference
 	@OneToOne
 	@JoinColumn(name="pedido_id")
 	@MapsId // Garante que o Id informado aqui é o mesmo que está no pedido

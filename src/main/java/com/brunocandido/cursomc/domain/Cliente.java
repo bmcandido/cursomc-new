@@ -15,8 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.brunocandido.cursomc.enuns.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Cliente implements Serializable {
@@ -34,7 +33,7 @@ public class Cliente implements Serializable {
 	private Integer tipoCliente;
     
 	
-	@JsonManagedReference
+	//@JsonManagedReference
 	@OneToMany(mappedBy="cliente") //"cliente" equivale a classe Enderecos declaracao private Cliente cliente; 
 	private List<Enderecos> enderecos = new ArrayList<>();
 	
@@ -42,8 +41,8 @@ public class Cliente implements Serializable {
 	@CollectionTable(name="TELEFONE")
 	private Set<String> telefone = new HashSet<>(); // Set salva uma lista não podendo repetir, ou seja nao poderei
 													// repetir o telefone
-	
-	@JsonBackReference //Dentro da Classe Cliente é feito @JsonBackReference ,@JsonManagedReference dentro do Pedido
+	 @JsonIgnore
+	//@JsonBackReference //Dentro da Classe Cliente é feito @JsonBackReference ,@JsonManagedReference dentro do Pedido
     //Esta anotação serve para que o serviço não dê um loop infinito
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();

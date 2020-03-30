@@ -30,21 +30,24 @@ public class Produto implements Serializable {
 	private String descricao;
 	private Double preco;
 	private String complemento;
-
-	@JsonBackReference
+    
+	@JsonIgnore
+	//@JsonBackReference
 	@ManyToMany
 	@JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id")) // Estes
 																																					// ID
 	// Tabela Temporaria de Ligação
 	private List<Categoria> categorias = new ArrayList<>();
-
-	@JsonBackReference
+     
+	@JsonIgnore
+	//@JsonBackReference
 	@ManyToMany
 	@JoinTable(name = "PRODUTO_CLASSIFICACAO", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "classificacaoproduto_id")) // Estes
 																																									// Comandos
 	private List<ClassificacaoProduto> classificacaoProduto = new ArrayList<>();
-
-	@JsonBackReference
+   
+	@JsonIgnore
+	//@JsonBackReference
 	@ManyToMany
 	@JoinTable(name = "PRODUTO_TIPO", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "tipoproduto_id")) // Estes
 																																					// ID
