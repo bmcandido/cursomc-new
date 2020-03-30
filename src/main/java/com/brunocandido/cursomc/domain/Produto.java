@@ -2,7 +2,9 @@ package com.brunocandido.cursomc.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -51,6 +54,11 @@ public class Produto implements Serializable {
 	          inverseJoinColumns = @JoinColumn(name = "tipoproduto_id")) // Estes
 																																				// ID
 	private List<TipoProduto> tipoProduto = new ArrayList<>();
+	
+	
+	@OneToMany(mappedBy = "id.produto") // Observa na Classe ItemPedidoPrimaryKey que a associação é a junção do id da
+	// Classe mais a classe produto
+	private Set<ItemPedido> itens = new HashSet<>();
 
 	public Produto() {
 
@@ -65,6 +73,14 @@ public class Produto implements Serializable {
 		// Categoria não foi inicializada porque já foi inicializada dentro da
 		// declaração
 	}
+	
+	public List<Pedido> getPedidos(){
+		List<Pedido> lista = new ArrayList<>();
+		for (ItemPedido x : this.itens) {
+			lista.add(x.getPedido());			
+		}
+		return lista;
+	} //Criado este metodo para retornar dentro de produto a lista de pedidos
 
 	public Integer getId() {
 		return id;
@@ -121,6 +137,15 @@ public class Produto implements Serializable {
 	public void setTipoProduto(List<TipoProduto> tipoProduto) {
 		this.tipoProduto = tipoProduto;
 	}
+	
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -146,5 +171,6 @@ public class Produto implements Serializable {
 			return false;
 		return true;
 	}
+
 
 }

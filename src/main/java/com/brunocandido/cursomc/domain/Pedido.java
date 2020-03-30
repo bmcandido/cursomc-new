@@ -1,6 +1,9 @@
 package com.brunocandido.cursomc.domain;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.brunocandido.cursomc.domain.Cliente;
@@ -32,17 +36,19 @@ public class Pedido implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
-	private Cliente cliente; //Mapeado pois o Cliente pode ver o pedido e o Pedido pode enchergar o cliente
+	private Cliente cliente; // Mapeado pois o Cliente pode ver o pedido e o Pedido pode enchergar o cliente
 
 	@ManyToOne
 	@JoinColumn(name = "endereco_entreda_id")
 	private Enderecos enderecoDeEntrega;
 
+	@OneToMany(mappedBy = "id.pedido") // Observa na Classe ItemPedidoPrimaryKey que a associação é a junção do id da
+										// Classe mais a classe pedido
+	private Set<ItemPedido> itens = new HashSet<>();
+
 	public Pedido() {
 
 	}
-	
-	
 
 	public Pedido(Integer id, Date instante, Cliente cliente, Enderecos enderecoDeEntrega) {
 		super();
@@ -51,8 +57,6 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
-
-
 
 	public Integer getId() {
 		return id;
@@ -92,6 +96,14 @@ public class Pedido implements Serializable {
 
 	public void setEnderecoDeEntrega(Enderecos enderecoDeEntrega) {
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 
 	@Override

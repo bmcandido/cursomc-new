@@ -14,6 +14,7 @@ import com.brunocandido.cursomc.domain.ClassificacaoProduto;
 import com.brunocandido.cursomc.domain.Cliente;
 import com.brunocandido.cursomc.domain.Enderecos;
 import com.brunocandido.cursomc.domain.Estado;
+import com.brunocandido.cursomc.domain.ItemPedido;
 import com.brunocandido.cursomc.domain.Pagamento;
 import com.brunocandido.cursomc.domain.PagamentoBoleto;
 import com.brunocandido.cursomc.domain.PagamentoComCartao;
@@ -28,6 +29,7 @@ import com.brunocandido.cursomc.repositories.ClassificacaoProdutoRepository;
 import com.brunocandido.cursomc.repositories.ClienteRepository;
 import com.brunocandido.cursomc.repositories.EnderecosRepository;
 import com.brunocandido.cursomc.repositories.EstadoRepository;
+import com.brunocandido.cursomc.repositories.ItemPedidoRepository;
 import com.brunocandido.cursomc.repositories.PagamentoRepository;
 import com.brunocandido.cursomc.repositories.PedidoRepository;
 import com.brunocandido.cursomc.repositories.ProdutoRepository;
@@ -60,13 +62,15 @@ public class CursomcApplication implements CommandLineRunner { // Acrescentei o 
 
 	@Autowired
 	EnderecosRepository enderecosRepository;
-	
+
 	@Autowired
 	PedidoRepository pedidoRepository;
-	
+
 	@Autowired
 	PagamentoRepository pagamentoRepository;
-	
+
+	@Autowired
+	ItemPedidoRepository itemPedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -232,22 +236,38 @@ public class CursomcApplication implements CommandLineRunner { // Acrescentei o 
 		Pagamento pg1 = new PagamentoComCartao(null, EstadoPagamento.PAGO, ped1, 6);
 		ped1.setPagamento(pg1);
 
-		Pagamento pg2 = new PagamentoBoleto(null, EstadoPagamento.PENDENTE, ped2,
-				null,
+		Pagamento pg2 = new PagamentoBoleto(null, EstadoPagamento.PENDENTE, ped2, null,
 				new SimpleDateFormat("DD/mm/yyyy").parse("30/04/2020"));
-		
+
 		ped2.setPagamento(pg2);
-		
+
 		cli1.getPedidos().addAll(Arrays.asList(ped1));
 		cli2.getPedidos().addAll(Arrays.asList(ped2));
-		
 
 		// ****************************************************************************************************************
-		// Repository
+		// Repository do Pedido e Pagamento
 
-		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
-		pagamentoRepository.saveAll(Arrays.asList(pg1,pg2));
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pg1, pg2));
+
+		// ****************************************************************************************************************
+		// Dominio Item de Pedido
+
+		ItemPedido ite1 = new ItemPedido(ped1, p1, 12, 10, 10.20);
+		ItemPedido ite2 = new ItemPedido(ped1, p4, 20, 300, 80);
+		ItemPedido ite3 = new ItemPedido(ped2, p2, 20, 1000, 30.20);
+
+		ped1.getItens().addAll(Arrays.asList(ite1, ite2));
+		ped2.getItens().addAll(Arrays.asList(ite3));
+
+		p1.getItens().addAll(Arrays.asList(ite1));
+		p2.getItens().addAll(Arrays.asList(ite2));
+		p4.getItens().addAll(Arrays.asList(ite3));
+
+		// ****************************************************************************************************************
+		// Repository do Iem de PEdido
 		
+		itemPedidoRepository.saveAll(Arrays.asList(ite1,ite2,ite3));
 
 	}
 
